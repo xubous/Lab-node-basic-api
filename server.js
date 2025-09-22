@@ -8,7 +8,14 @@ const app = express ()
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'none'"],
+      imgSrc: ["'self'", 'https:'],
+    },
+  })
+)
 app.use('/app', express.static (path.join (__dirname, '/public')))
 
 let port = process.env.PORT || 3000
