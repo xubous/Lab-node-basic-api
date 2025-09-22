@@ -3,24 +3,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const helmet = require('helmet');
-
 const app = express();
 
 app.use(cors());
-
-// Helmet com CSP mínimo
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'"],
-      imgSrc: ["'self'", 'data:', 'https:'], // Permite favicon
-    },
-  })
-);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
