@@ -1,38 +1,41 @@
-require('dotenv').config()
+require('dotenv').config();
 
-const express = require('express')
-const cors = require('cors')
-const path = require('path')
-const helmet = require('helmet') // << ADICIONADO
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const helmet = require('helmet');
 
-const app = express()
+const app = express();
 
-// CORS e segurança
-app.use(cors())
+app.use(cors());
 
-// Helmet com configuração personalizada de CSP
+// Helmet com CSP mínimo
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'"],
-      styleSrc: ["'self'", 'https:'],
-      imgSrc: ["'self'", 'data:', 'https:'], // permite favicon e imagens externas seguras
-      connectSrc: ["'self'"],
-      fontSrc: ["'self'", 'https:'],
-      objectSrc: ["'none'"],
-      upgradeInsecureRequests: [],
+      styleSrc: ["'self'"],
+      imgSrc: ["'self'", 'data:', 'https:'], // Permite favicon
     },
   })
-)
+);
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Rota estática
-app.use('/app', express.static(path.join(__dirname, '/public')))
+// Serve os arquivos estáticos na rota /app
+app.use('/app', express.static(path.join(__dirname, '/public')));
 
-const port = process.env.PORT || 3000
+// Redireciona / para /app
+app.get('/', (req, res) => {
+  res.redirect('/app');
+});
+
+// Serve favicon direto, se necessário
+app.use('/favicon.ico', express.static(path.join(__dirname, 'public', 'favicon.ico')));
+
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`)
-})
+  console.log(`Servidor rodando na porta ${port}`);
+});
